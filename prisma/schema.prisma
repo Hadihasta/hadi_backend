@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,55 +9,55 @@ datasource db {
 
 model User {
   id        Int       @id @default(autoincrement())
-  name      String?
-  email     String?   @unique
-  role      String?
-  createdAt DateTime? @default(now())
+  name      String
+  email     String    @unique
+  role      String    @default("user")
+  createdAt DateTime  @default(now())
   bookings  Booking[]
 }
 
 model Unit {
   id        Int           @id @default(autoincrement())
-  name      String?
+  name      String
   rooms     MeetingRoom[]
-  createdAt DateTime?     @default(now())
+  createdAt DateTime      @default(now())
 }
 
 model MeetingRoom {
   id        Int       @id @default(autoincrement())
-  name      String?
-  capacity  Int?
-  unit      Unit?     @relation(fields: [unitId], references: [id])
-  unitId    Int?
+  name      String
+  capacity  Int
+  unit      Unit      @relation(fields: [unitId], references: [id])
+  unitId    Int
   bookings  Booking[]
-  createdAt DateTime? @default(now())
+  createdAt DateTime  @default(now())
 }
 
 model Booking {
   id            Int                  @id @default(autoincrement())
-  user          User?                @relation(fields: [userId], references: [id])
-  userId        Int?
-  meetingRoom   MeetingRoom?         @relation(fields: [meetingRoomId], references: [id])
-  meetingRoomId Int?
-  date          DateTime?
-  startTime     DateTime?
-  endTime       DateTime?
-  participants  Int?
+  user          User                 @relation(fields: [userId], references: [id])
+  userId        Int
+  meetingRoom   MeetingRoom          @relation(fields: [meetingRoomId], references: [id])
+  meetingRoomId Int
+  date          DateTime
+  startTime     DateTime
+  endTime       DateTime
+  participants  Int
   consumptions  BookingConsumption[]
-  createdAt     DateTime?            @default(now())
+  createdAt     DateTime             @default(now())
 }
 
 model Consumption {
   id       Int                  @id @default(autoincrement())
-  name     String?
-  price    Float?
+  name     String
+  price    Float
   bookings BookingConsumption[]
 }
 
 model BookingConsumption {
-  id            Int          @id @default(autoincrement())
-  booking       Booking?     @relation(fields: [bookingId], references: [id])
-  bookingId     Int?
-  consumption   Consumption? @relation(fields: [consumptionId], references: [id])
-  consumptionId Int?
+  id            Int         @id @default(autoincrement())
+  booking       Booking     @relation(fields: [bookingId], references: [id])
+  bookingId     Int
+  consumption   Consumption @relation(fields: [consumptionId], references: [id])
+  consumptionId Int
 }

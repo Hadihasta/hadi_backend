@@ -1,10 +1,40 @@
 import prisma from "./lib/prismaClient.js";
 import express from "express";
+import cors from "cors";
 
 const app = express();
+app.use(cors());
 
-// Middleware untuk parsing JSON body
 app.use(express.json());
+
+// api untuk load table data ambil dari booking
+app.get("/api/meeting-bookings", async (req, res) => {
+  try {
+    const bookings = await prisma.booking.findMany({
+      include: {
+        meetingRoom: {
+          include: {
+            unit: true,
+          },
+        },
+        user: true,
+        consumptions: {
+          include: {
+            consumption: true,
+          },
+        },
+      },
+    });
+
+    return res.json({ success: true, bookings });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: error.message || "Internal Server Error",
+    });
+  }
+});
 
 app.post("/api/add-meeting-book", async (req, res) => {
   try {
